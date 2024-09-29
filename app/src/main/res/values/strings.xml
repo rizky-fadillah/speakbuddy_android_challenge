@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Edison Android Exercise</string>
+
+    <string name="fact_screen_toolbar_title">Fact</string>
+    <string name="fact_screen_multiple_cats_label">Multiple cats!</string>
+    <string name="fact_screen_length_label">Length: %s</string>
+    <string name="fact_screen_update_fact_cta_label">Update fact</string>
 </resources>

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -23,37 +24,36 @@ class FactViewModel @Inject constructor(
     observeRandomCatFact: ObserveRandomCatFact
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch {
-//            refresh()
-        }
-    }
-
-    private val _loading = MutableStateFlow(false)
-    val loading: StateFlow<Boolean> = _loading
+    private val _triggerRefresh = MutableStateFlow(false)
 
     private val _error: MutableStateFlow<Exception?> = MutableStateFlow(null)
     val error: StateFlow<Exception?> = _error
 
-    val uiState = observeRandomCatFact().map {
-        it?.let { catFact ->
-            RandomCatFactUiState.Success(
-                fact = catFact.fact,
-                length = if (catFact.length > 100) catFact.length.toString() else null
-            )
-        } ?: RandomCatFactUiState.Error("No data")
-    }.onStart {
-        emit(RandomCatFactUiState.Loading)
-    }.catch {
-        emit(RandomCatFactUiState.Error(it.message))
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = RandomCatFactUiState.Loading,
-    )
+    val uiState: StateFlow<RandomCatFactUiState> =
+        combine(observeRandomCatFact(), _triggerRefresh, ::Pair).map {
+            if (it.second) {
+                RandomCatFactUiState.Loading
+            } else {
+                it.first?.let { catFact ->
+                    RandomCatFactUiState.Success(
+                        fact = catFact.fact,
+                        length = if (catFact.length > 100) catFact.length.toString() else null,
+                        shouldShowMultipleCats = catFact.fact.lowercase().contains("cats")
+                    )
+                } ?: RandomCatFactUiState.Error("No data")
+            }
+        }.onStart {
+            emit(RandomCatFactUiState.Loading)
+        }.catch {
+            emit(RandomCatFactUiState.Error(it.message))
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = RandomCatFactUiState.Loading,
+        )
 
     fun refresh() = viewModelScope.launch {
-        _loading.value = true
+        _triggerRefresh.value = true
 
         try {
             refreshRandomCatFact()
@@ -62,7 +62,7 @@ class FactViewModel @Inject constructor(
         } catch (e: Exception) {
             _error.value = e
         } finally {
-            _loading.value = false
+            _triggerRefresh.value = false
         }
     }
 
@@ -76,7 +76,9 @@ class FactViewModel @Inject constructor(
 }
 
 sealed interface RandomCatFactUiState {
-    data class Success(val fact: String, val length: String?) : RandomCatFactUiState
+    data class Success(val fact: String, val length: String?, val shouldShowMultipleCats: Boolean) :
+        RandomCatFactUiState
+
     data class Error(val message: String?) : RandomCatFactUiState
     data object Loading : RandomCatFactUiState
 }
