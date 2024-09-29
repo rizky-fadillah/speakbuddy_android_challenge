@@ -1,4 +1,4 @@
-package jp.speakbuddy.edisonandroidexercise.network
+package jp.speakbuddy.edisonandroidexercise.data.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.Serializable
@@ -9,11 +9,11 @@ import retrofit2.http.GET
 
 interface FactService {
     @GET("fact")
-    suspend fun getFact(): FactResponse
+    suspend fun getFact(): NetworkCatFact
 }
 
 @Serializable
-data class FactResponse(
+data class NetworkCatFact(
     val fact: String,
     val length: Int
 )
