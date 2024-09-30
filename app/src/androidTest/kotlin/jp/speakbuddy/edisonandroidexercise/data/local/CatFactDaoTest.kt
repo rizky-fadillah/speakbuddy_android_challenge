@@ -3,6 +3,8 @@ package jp.speakbuddy.edisonandroidexercise.data.local
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import jp.speakbuddy.edisonandroidexercise.data.local.dao.CatFactDao
+import jp.speakbuddy.edisonandroidexercise.data.local.model.CatFactEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
@@ -30,7 +32,7 @@ class CatFactDaoTest {
     fun closeDb() = db.close()
 
     @Test
-    fun catFactDao_get_recent_cat_fact_entity() = runTest {
+    fun catFactDao_get_latest_cat_fact_entity() = runTest {
         val entity = CatFactEntity(
             id = 0,
             fact = "This is cat fact no. 1",
@@ -47,7 +49,7 @@ class CatFactDaoTest {
 
         assertEquals(
             entity2,
-            catFactDao.getRecentCatFactEntity().first()
+            catFactDao.getLatestCatFactEntity().first()
         )
     }
 }

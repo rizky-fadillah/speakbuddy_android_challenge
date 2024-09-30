@@ -4,8 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import jp.speakbuddy.edisonandroidexercise.data.CatsRepository
-import jp.speakbuddy.edisonandroidexercise.data.DefaultCatsRepository
+import jp.speakbuddy.edisonandroidexercise.data.repository.CatsRepository
+import jp.speakbuddy.edisonandroidexercise.data.repository.DefaultCatsRepository
 
 @Module
 @InstallIn(SingletonComponent::class)

@@ -1,8 +1,8 @@
-package jp.speakbuddy.edisonandroidexercise.data
+package jp.speakbuddy.edisonandroidexercise.data.repository
 
-import jp.speakbuddy.edisonandroidexercise.data.local.CatFactDao
-import jp.speakbuddy.edisonandroidexercise.data.local.CatFactEntity
-import jp.speakbuddy.edisonandroidexercise.data.local.asExternalModel
+import jp.speakbuddy.edisonandroidexercise.data.local.dao.CatFactDao
+import jp.speakbuddy.edisonandroidexercise.data.local.model.CatFactEntity
+import jp.speakbuddy.edisonandroidexercise.data.local.model.asExternalModel
 import jp.speakbuddy.edisonandroidexercise.data.testdoubles.TestCatFactDao
 import jp.speakbuddy.edisonandroidexercise.data.testdoubles.TestCatsNetworkDataSource
 import kotlinx.coroutines.flow.first
@@ -49,21 +49,21 @@ class DefaultCatsRepositoryTest {
         catFactDao.insertCatFact(entityToInsert)
 
         assertEquals(
-            subject.getRecentCatFact().first(),
+            subject.getLatestCatFact().first(),
             entityToInsert.asExternalModel()
         )
         assertEquals(
-            subject.getRecentCatFact().first(),
-            catFactDao.getRecentCatFactEntity().first()?.asExternalModel()
+            subject.getLatestCatFact().first(),
+            catFactDao.getLatestCatFactEntity().first()?.asExternalModel()
         )
     }
 
     @Test
     fun refresh() = testScope.runTest {
-        subject.refresh()
+        subject.loadRandomCatFact()
 
         assertEquals(
-            catFactDao.getRecentCatFactEntity().first(),
+            catFactDao.getLatestCatFactEntity().first(),
             CatFactEntity(
                 id = 0,
                 fact = "This is a cat fact.",

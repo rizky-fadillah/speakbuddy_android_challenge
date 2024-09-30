@@ -1,4 +1,4 @@
-package jp.speakbuddy.edisonandroidexercise.ui.fact
+package jp.speakbuddy.edisonandroidexercise.feature.randomfact
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,10 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jp.speakbuddy.edisonandroidexercise.R
-import jp.speakbuddy.edisonandroidexercise.ui.fact.RandomCatFactUiState.Error
-import jp.speakbuddy.edisonandroidexercise.ui.fact.RandomCatFactUiState.Loading
-import jp.speakbuddy.edisonandroidexercise.ui.fact.RandomCatFactUiState.Success
-import jp.speakbuddy.edisonandroidexercise.ui.theme.EdisonAndroidExerciseTheme
+import jp.speakbuddy.edisonandroidexercise.core.designsystem.theme.EdisonAndroidExerciseTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,9 +98,9 @@ private fun ColumnScope.RandomFactContent(
             )
         } else {
             when (randomCatFactUiState) {
-                is Success -> FactContent(randomCatFactUiState = randomCatFactUiState)
+                is RandomCatFactUiState.Success -> FactContent(randomCatFactUiState = randomCatFactUiState)
 
-                Loading -> Box(
+                RandomCatFactUiState.Loading -> Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
@@ -116,7 +113,7 @@ private fun ColumnScope.RandomFactContent(
                     )
                 }
 
-                is Error -> Text(
+                is RandomCatFactUiState.Error -> Text(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
@@ -141,7 +138,7 @@ private fun ColumnScope.RandomFactContent(
 }
 
 @Composable
-private fun FactContent(randomCatFactUiState: Success) {
+private fun FactContent(randomCatFactUiState: RandomCatFactUiState.Success) {
     Column(modifier = Modifier.padding(16.dp)) {
         if (randomCatFactUiState.shouldShowMultipleCats) {
             Text(
@@ -190,7 +187,7 @@ private fun FactContentNoMultipleCatsNoLength() {
     EdisonAndroidExerciseTheme {
         Surface {
             FactContent(
-                Success(
+                RandomCatFactUiState.Success(
                     "The Maine Coon is 4 to 5 times larger than Singapura, smallest breed of breed of cat",
                     length = null,
                     false
@@ -206,7 +203,7 @@ private fun FactContentMultipleCatsWithLength() {
     EdisonAndroidExerciseTheme {
         Surface {
             FactContent(
-                randomCatFactUiState = Success(
+                randomCatFactUiState = RandomCatFactUiState.Success(
                     "The cat's front paw has 5 toes, but the back paws have 4. Some cats are born with as many as 7 front toes and extra back toes (polydactl).",
                     length = "138",
                     true
@@ -223,7 +220,7 @@ private fun RandomFactContentNoCatsNoLength() {
         Surface {
             Column {
                 RandomFactContent(
-                    randomCatFactUiState = Success(
+                    randomCatFactUiState = RandomCatFactUiState.Success(
                         "The Maine Coon is 4 to 5 times larger than Singapura, smallest breed of breed of cat",
                         length = null,
                         false
@@ -243,7 +240,7 @@ private fun RandomFactContentMultipleCatsWithLength() {
         Surface {
             Column {
                 RandomFactContent(
-                    randomCatFactUiState = Success(
+                    randomCatFactUiState = RandomCatFactUiState.Success(
                         "The cat's front paw has 5 toes, but the back paws have 4. Some cats are born with as many as 7 front toes and extra back toes (polydactl).",
                         length = "138",
                         true
@@ -263,7 +260,7 @@ private fun RandomFactContentMultipleCatsWithNoLength() {
         Surface {
             Column {
                 RandomFactContent(
-                    randomCatFactUiState = Success(
+                    randomCatFactUiState = RandomCatFactUiState.Success(
                         "Cats have about 130,000 hairs per square inch (20,155 hairs per square centimeter).",
                         length = null,
                         true
@@ -283,7 +280,7 @@ private fun RandomFactContentLoading() {
         Surface {
             Column {
                 RandomFactContent(
-                    randomCatFactUiState = Loading,
+                    randomCatFactUiState = RandomCatFactUiState.Loading,
                     error = null,
                     onClick = {}
                 )
@@ -299,7 +296,7 @@ private fun RandomFactContentError() {
         Surface {
             Column {
                 RandomFactContent(
-                    randomCatFactUiState = Loading,
+                    randomCatFactUiState = RandomCatFactUiState.Loading,
                     error = Exception("Unable to resolve host catfact.ninja: No address associated with hostname"),
                     onClick = {}
                 )

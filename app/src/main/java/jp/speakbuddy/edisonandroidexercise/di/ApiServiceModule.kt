@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import jp.speakbuddy.edisonandroidexercise.data.network.FactService
+import jp.speakbuddy.edisonandroidexercise.data.network.retrofit.FactService
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit

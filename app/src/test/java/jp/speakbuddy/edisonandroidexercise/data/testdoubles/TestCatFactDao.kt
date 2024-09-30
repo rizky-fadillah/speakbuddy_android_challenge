@@ -1,7 +1,7 @@
 package jp.speakbuddy.edisonandroidexercise.data.testdoubles
 
-import jp.speakbuddy.edisonandroidexercise.data.local.CatFactDao
-import jp.speakbuddy.edisonandroidexercise.data.local.CatFactEntity
+import jp.speakbuddy.edisonandroidexercise.data.local.dao.CatFactDao
+import jp.speakbuddy.edisonandroidexercise.data.local.model.CatFactEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -19,7 +19,7 @@ class TestCatFactDao : CatFactDao {
         }
     }
 
-    override fun getRecentCatFactEntity(): Flow<CatFactEntity?> {
+    override fun getLatestCatFactEntity(): Flow<CatFactEntity?> {
         return entitiesStateFlow.map {
             it.first()
         }

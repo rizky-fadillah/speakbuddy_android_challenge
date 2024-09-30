@@ -1,9 +1,9 @@
-package jp.speakbuddy.edisonandroidexercise.data.local
+package jp.speakbuddy.edisonandroidexercise.data.local.model
 
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import jp.speakbuddy.edisonandroidexercise.domain.model.Fact
+import jp.speakbuddy.edisonandroidexercise.model.Fact
 
 @Entity(
     indices = [

@@ -115,6 +115,10 @@ dependencies {
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.junit.jupiter.api)
 
+    api(libs.junit)
+    api(libs.junit.jupiter.api)
+    api(libs.kotlinx.coroutines.test)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
