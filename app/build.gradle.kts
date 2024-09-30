@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
+    id("de.mannodermaus.android-junit5")
 
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
@@ -85,12 +86,13 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.v111)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.protobuf.kotlin.lite.v3252)
 
-    implementation(libs.room.runtime)
+    kapt(libs.hilt.compiler)
     kapt(libs.room.compiler) //TODO: Update to KSP
+
+    implementation(libs.room.runtime)
     implementation(libs.room.ktx)
 
     implementation(libs.kotlinx.serialization.json)
@@ -100,9 +102,16 @@ dependencies {
     implementation(libs.retrofit.core)
 
     testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.junit.jupiter.api)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
+
+    androidTestImplementation(kotlin("test"))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core.v361)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.test.core)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
