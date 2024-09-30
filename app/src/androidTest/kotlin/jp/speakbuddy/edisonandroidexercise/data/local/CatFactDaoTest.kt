@@ -5,10 +5,10 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class CatFactDaoTest {
 
@@ -16,7 +16,7 @@ class CatFactDaoTest {
 
     private lateinit var db: CatFactDatabase
 
-    @Before
+    @BeforeEach
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(
@@ -26,7 +26,7 @@ class CatFactDaoTest {
         catFactDao = db.catFactDao()
     }
 
-    @After
+    @AfterEach
     fun closeDb() = db.close()
 
     @Test

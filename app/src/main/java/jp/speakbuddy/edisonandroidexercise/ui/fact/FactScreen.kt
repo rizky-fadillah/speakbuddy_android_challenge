@@ -92,7 +92,9 @@ private fun ColumnScope.RandomFactContent(
     Box {
         if (error != null) {
             Text(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 text = error.message.orEmpty(),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
@@ -115,6 +117,9 @@ private fun ColumnScope.RandomFactContent(
                 }
 
                 is Error -> Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                     text = randomCatFactUiState.message.orEmpty(),
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center
