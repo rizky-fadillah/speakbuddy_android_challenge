@@ -9,6 +9,6 @@ data object FactRoute
 
 fun NavGraphBuilder.factScreen(onFactHistoryClick: () -> Unit) {
     composable<FactRoute> {
-        FactScreen(onFactHistoryClick = onFactHistoryClick)
+        RandomCatFactScreen(onFactHistoryClick = onFactHistoryClick)
     }
 }

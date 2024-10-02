@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
 package jp.speakbuddy.edisonandroidexercise.feature.facthistory
 
 import androidx.compose.foundation.Image
@@ -107,7 +109,6 @@ fun FactHistoryScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchToolbar(
     searchQuery: String,
@@ -195,7 +196,7 @@ private fun SearchToolbar(
 }
 
 @Composable
-private fun BoxScope.SearchResultBody(facts: List<PresentableFact>) {
+fun BoxScope.SearchResultBody(facts: List<PresentableFact>) {
     LazyColumn(
         modifier = Modifier.align(Alignment.TopCenter),
         verticalArrangement = Arrangement.SpaceAround

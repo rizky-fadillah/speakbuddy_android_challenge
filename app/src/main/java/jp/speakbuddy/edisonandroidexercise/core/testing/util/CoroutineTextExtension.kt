@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package jp.speakbuddy.edisonandroidexercise.core.testing.util
 
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.TestInstancePostProcessor
 
-@ExperimentalCoroutinesApi
 class CoroutineTestExtension : TestInstancePostProcessor, BeforeAllCallback, AfterAllCallback {
 
     private val dispatcher = UnconfinedTestDispatcher()
@@ -36,7 +37,6 @@ class CoroutineTestExtension : TestInstancePostProcessor, BeforeAllCallback, Aft
 /*
     Interface to be implemented by test classes
 */
-@ExperimentalCoroutinesApi
 @ExtendWith(CoroutineTestExtension::class)
 interface CoroutineTest {
     var testScope: TestScope
