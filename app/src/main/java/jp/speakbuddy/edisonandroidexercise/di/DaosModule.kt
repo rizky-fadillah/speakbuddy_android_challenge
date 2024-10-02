@@ -4,8 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import jp.speakbuddy.edisonandroidexercise.data.local.CatFactDatabase
-import jp.speakbuddy.edisonandroidexercise.data.local.dao.CatFactDao
+import jp.speakbuddy.edisonandroidexercise.database.CatFactDatabase
+import jp.speakbuddy.edisonandroidexercise.database.dao.CatFactDao
 
 @Module
 @InstallIn(SingletonComponent::class)

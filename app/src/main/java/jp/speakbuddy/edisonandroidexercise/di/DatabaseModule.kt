@@ -8,7 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import jp.speakbuddy.edisonandroidexercise.data.local.CatFactDatabase
+import jp.speakbuddy.edisonandroidexercise.database.CatFactDatabase
 
 @Module
 @InstallIn(SingletonComponent::class)

@@ -70,6 +70,7 @@ uiTestJunit4 = "1.7.2"
 uiTestManifest = "1.7.2"
 uiTooling = "1.7.2"
 uiToolingPreview = "1.7.2"
+material = "1.10.0"
 
 [bundles]
 androidx-compose-ui-test = ["androidx-compose-ui-test", "androidx-compose-ui-testManifest"]
@@ -184,6 +185,7 @@ compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -216,3 +218,4 @@ speakbuddy-android-room = { id = "nowinandroid.android.room" }
 nowinandroid-android-test = { id = "nowinandroid.android.test" }
 speakbuddy-hilt = { id = "nowinandroid.hilt" }
 nowinandroid-jvm-library = { id = "nowinandroid.jvm.library" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

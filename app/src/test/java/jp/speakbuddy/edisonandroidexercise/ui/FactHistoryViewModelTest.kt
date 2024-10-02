@@ -3,10 +3,10 @@ package jp.speakbuddy.edisonandroidexercise.ui
 import jp.speakbuddy.edisonandroidexercise.core.testing.repository.TestCatsRepository
 import jp.speakbuddy.edisonandroidexercise.core.testing.util.CoroutineTest
 import jp.speakbuddy.edisonandroidexercise.domain.SearchCatFacts
+import jp.speakbuddy.edisonandroidexercise.domain.model.toPresentableFact
 import jp.speakbuddy.edisonandroidexercise.feature.facthistory.FactHistoryUiState
 import jp.speakbuddy.edisonandroidexercise.feature.facthistory.FactHistoryViewModel
 import jp.speakbuddy.edisonandroidexercise.model.Fact
-import jp.speakbuddy.edisonandroidexercise.model.toPresentableFact
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first

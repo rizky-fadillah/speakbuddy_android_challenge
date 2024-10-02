@@ -7,10 +7,10 @@ import jp.speakbuddy.edisonandroidexercise.core.testing.util.CoroutineTest
 import jp.speakbuddy.edisonandroidexercise.domain.ObserveRandomCatFact
 import jp.speakbuddy.edisonandroidexercise.domain.RefreshRandomCatFact
 import jp.speakbuddy.edisonandroidexercise.domain.model.PresentableFact
+import jp.speakbuddy.edisonandroidexercise.domain.model.toPresentableFact
 import jp.speakbuddy.edisonandroidexercise.feature.randomfact.RandomCatFactUiState
 import jp.speakbuddy.edisonandroidexercise.feature.randomfact.RandomCatFactViewModel
 import jp.speakbuddy.edisonandroidexercise.model.Fact
-import jp.speakbuddy.edisonandroidexercise.model.toPresentableFact
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first

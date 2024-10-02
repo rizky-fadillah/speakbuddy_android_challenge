@@ -1,14 +1,14 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("de.mannodermaus.android-junit5")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.compose)
 
-    kotlin("kapt")
-    id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.android")
+    id("de.mannodermaus.android-junit5")
     id("com.google.protobuf")
 
-    alias(libs.plugins.compose)
+    kotlin("kapt")
 }
 
 android {
@@ -76,6 +76,8 @@ protobuf {
 }
 
 dependencies {
+    implementation(project(":data"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose.v190)
