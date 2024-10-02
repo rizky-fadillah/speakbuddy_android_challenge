@@ -71,8 +71,6 @@ class FactViewModelTest : CoroutineTest {
     fun uiStateRandomCatFact_whenRefreshStarts_thenShowLoading() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-        viewModel.refresh()
-
         assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
     }
 
@@ -80,8 +78,6 @@ class FactViewModelTest : CoroutineTest {
     fun uiStateRandomCatFact_whenRefreshStartsAndCompletes_thenShowLoadingAndSuccess() =
         runTest {
             backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-
-            viewModel.refresh()
 
             assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
 
@@ -113,8 +109,6 @@ class FactViewModelTest : CoroutineTest {
 
             backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-            viewModel.refresh()
-
             assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
 
             assertEquals(
@@ -127,8 +121,6 @@ class FactViewModelTest : CoroutineTest {
     fun uiStateRandomCatFact_whenObserveRandomCatFactFail_thenShowError() =
         runTest {
             backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-
-            viewModel.refresh()
 
             assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
 

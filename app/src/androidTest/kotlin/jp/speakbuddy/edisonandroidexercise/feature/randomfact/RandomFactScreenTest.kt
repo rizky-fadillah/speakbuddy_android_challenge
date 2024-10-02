@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalTestApi::class)
-class FactScreenTest {
+class RandomFactScreenTest {
 
     @JvmField
     @RegisterExtension
