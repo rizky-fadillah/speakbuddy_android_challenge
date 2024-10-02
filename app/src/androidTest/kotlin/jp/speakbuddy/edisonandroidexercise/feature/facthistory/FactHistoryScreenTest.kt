@@ -12,7 +12,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import de.mannodermaus.junit5.compose.createAndroidComposeExtension
 import jp.speakbuddy.edisonandroidexercise.R
-import jp.speakbuddy.edisonandroidexercise.domain.model.PresentableFact
+import jp.speakbuddy.edisonandroidexercise.core.testing.data.factGreaterThan100WithMultipleCats
+import jp.speakbuddy.edisonandroidexercise.core.testing.data.factGreaterThan100WithoutMultipleCats
+import jp.speakbuddy.edisonandroidexercise.core.testing.data.factSmallerThan100WithMultipleCats
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 
@@ -71,40 +73,22 @@ class FactHistoryScreenTest {
 
     @Test
     fun searchResultBody_verifyFactsAreDisplayed() {
-        val fact1 = "This is a cat fact no. 1"
-        val fact2 =
-            "Cats have about 130,000 hairs per square inch (20,155 hairs per square centimeter)."
-        val fact3 =
-            "The cat's front paw has 5 toes, but the back paws have 4. Some cats are born with as many as 7 front toes and extra back toes (polydactl)."
+        val presentableFact1 = factGreaterThan100WithMultipleCats
+        val presentableFact2 = factGreaterThan100WithoutMultipleCats
+        val presentableFact3 = factSmallerThan100WithMultipleCats
 
         extension.use {
             setContent {
                 Box {
                     SearchResultBody(
-                        facts = listOf(
-                            PresentableFact(
-                                fact1,
-                                null,
-                                false
-                            ),
-                            PresentableFact(
-                                fact = fact2,
-                                length = null,
-                                shouldShowMultipleCats = true
-                            ),
-                            PresentableFact(
-                                fact = fact3,
-                                length = "138",
-                                shouldShowMultipleCats = true
-                            )
-                        )
+                        facts = listOf(presentableFact1, presentableFact2, presentableFact3)
                     )
                 }
             }
 
-            onNodeWithText(fact1).assertIsDisplayed()
-            onNodeWithText(fact2).assertIsDisplayed()
-            onNodeWithText(fact3).assertIsDisplayed()
+            onNodeWithText(presentableFact1.fact).assertIsDisplayed()
+            onNodeWithText(presentableFact2.fact).assertIsDisplayed()
+            onNodeWithText(presentableFact3.fact).assertIsDisplayed()
         }
     }
 
