@@ -16,7 +16,7 @@ internal object DatabaseModule {
 
     @Provides
     @Singleton
-    fun providesNiaDatabase(
+    fun providesCatFactDatabase(
         @ApplicationContext context: Context,
     ): CatFactDatabase = Room.databaseBuilder(
         context,

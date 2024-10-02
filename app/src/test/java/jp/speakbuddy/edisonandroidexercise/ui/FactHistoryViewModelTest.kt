@@ -38,17 +38,46 @@ class FactHistoryViewModelTest : CoroutineTest {
     }
 
     @Test
+    fun uiState_whenInitialized_thenShowLoading() = runTest {
+        assertEquals(FactHistoryUiState.Loading, viewModel.factHistoryUiState.value)
+    }
+
+    @Test
+    fun uiState_whenCollectStarts_thenShowLoading() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.factHistoryUiState.collect() }
+
+        assertEquals(FactHistoryUiState.Loading, viewModel.factHistoryUiState.value)
+    }
+
+    @Test
     fun uiState_whenSuccess_matchesCatFactsFromRepository() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.factHistoryUiState.collect() }
 
         catsRepository.sendRandomCatFact(Fact("This is a cat fact.", length = 19))
 
         val successItem = viewModel.factHistoryUiState.value
-
         assertIs<FactHistoryUiState.Success>(successItem)
 
         val catFactsFromRepository = catsRepository.getCatFacts().first()
+        assertEquals(catFactsFromRepository.map { it.toPresentableFact() }, successItem.facts)
+    }
 
+    @Test
+    fun uiState_searchQuery_matchesCatFactsFromRepository() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.factHistoryUiState.collect() }
+
+        assertEquals(FactHistoryUiState.Loading, viewModel.factHistoryUiState.value)
+
+        viewModel.onSearchQueryChanged("Query")
+
+        assertEquals(FactHistoryUiState.Loading, viewModel.factHistoryUiState.value)
+
+        catsRepository.sendRandomCatFact(Fact("This is a cat fact.", length = 19))
+
+        val successItem = viewModel.factHistoryUiState.value
+        assertIs<FactHistoryUiState.Success>(successItem)
+
+        val catFactsFromRepository = catsRepository.getCatFacts().first()
         assertEquals(catFactsFromRepository.map { it.toPresentableFact() }, successItem.facts)
     }
 }

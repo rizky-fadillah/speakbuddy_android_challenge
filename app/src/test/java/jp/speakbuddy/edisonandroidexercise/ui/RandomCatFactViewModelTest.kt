@@ -7,8 +7,8 @@ import jp.speakbuddy.edisonandroidexercise.core.testing.util.CoroutineTest
 import jp.speakbuddy.edisonandroidexercise.domain.ObserveRandomCatFact
 import jp.speakbuddy.edisonandroidexercise.domain.RefreshRandomCatFact
 import jp.speakbuddy.edisonandroidexercise.domain.model.PresentableFact
-import jp.speakbuddy.edisonandroidexercise.feature.randomfact.FactViewModel
 import jp.speakbuddy.edisonandroidexercise.feature.randomfact.RandomCatFactUiState
+import jp.speakbuddy.edisonandroidexercise.feature.randomfact.RandomCatFactViewModel
 import jp.speakbuddy.edisonandroidexercise.model.Fact
 import jp.speakbuddy.edisonandroidexercise.model.toPresentableFact
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,7 +24,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class FactViewModelTest : CoroutineTest {
+class RandomCatFactViewModelTest : CoroutineTest {
 
     override lateinit var testScope: TestScope
 
@@ -37,29 +37,14 @@ class FactViewModelTest : CoroutineTest {
         catsRepository = catsRepository
     )
 
-    private lateinit var viewModel: FactViewModel
+    private lateinit var viewModel: RandomCatFactViewModel
 
     @BeforeEach
     fun setUp() {
-        viewModel = FactViewModel(
+        viewModel = RandomCatFactViewModel(
             refreshRandomCatFact = refreshRandomCatFact,
             observeRandomCatFact = observeRandomCatFact
         )
-    }
-
-    @Test
-    fun uiStateRandomCatFact_whenSuccess_matchesLatestCatFactFromRepository() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
-
-        catsRepository.sendRandomCatFact(Fact("This is a cat fact.", length = 19))
-
-        val successItem = viewModel.uiState.value
-
-        assertIs<RandomCatFactUiState.Success>(successItem)
-
-        val latestCatFactFromRepository = catsRepository.getLatestCatFact().first()
-
-        assertEquals(latestCatFactFromRepository?.toPresentableFact(), successItem.presentableFact)
     }
 
     @Test
@@ -68,14 +53,31 @@ class FactViewModelTest : CoroutineTest {
     }
 
     @Test
-    fun uiStateRandomCatFact_whenRefreshStarts_thenShowLoading() = runTest {
+    fun uiStateRandomCatFact_whenCollectStarts_thenShowLoading() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
         assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
-    fun uiStateRandomCatFact_whenRefreshStartsAndCompletes_thenShowLoadingAndSuccess() =
+    fun uiStateRandomCatFact_whenRandomCatFactObserved_matchesLatestCatFactFromRepository() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
+
+            catsRepository.sendRandomCatFact(Fact("This is a cat fact.", length = 19))
+
+            val successItem = viewModel.uiState.value
+            assertIs<RandomCatFactUiState.Success>(successItem)
+
+            val latestCatFactFromRepository = catsRepository.getLatestCatFact().first()
+            assertEquals(
+                latestCatFactFromRepository?.toPresentableFact(),
+                successItem.presentableFact
+            )
+        }
+
+    @Test
+    fun uiStateRandomCatFact_whenCollectStartsAndRandomCatFactObserved_thenShowLoadingAndSuccess() =
         runTest {
             backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
@@ -105,7 +107,7 @@ class FactViewModelTest : CoroutineTest {
             val thrownException = Exception("Error message")
             coEvery { mockRefreshRandomCatFact.invoke() } throws thrownException
 
-            val viewModel = FactViewModel(mockRefreshRandomCatFact, observeRandomCatFact)
+            val viewModel = RandomCatFactViewModel(mockRefreshRandomCatFact, observeRandomCatFact)
 
             backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 

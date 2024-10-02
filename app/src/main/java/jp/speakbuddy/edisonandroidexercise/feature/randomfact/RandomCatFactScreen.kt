@@ -50,7 +50,7 @@ import jp.speakbuddy.edisonandroidexercise.ui.DevicePreviews
 
 @Composable
 fun RandomCatFactScreen(
-    viewModel: FactViewModel = hiltViewModel(), onFactHistoryClick: () -> Unit
+    viewModel: RandomCatFactViewModel = hiltViewModel(), onFactHistoryClick: () -> Unit
 ) {
     val randomCatFactUiState: RandomCatFactUiState by viewModel.uiState.collectAsStateWithLifecycle()
     val error by viewModel.error.collectAsStateWithLifecycle()

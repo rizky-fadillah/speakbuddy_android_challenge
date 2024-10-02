@@ -19,6 +19,6 @@ interface CatFactDao {
     @Query("SELECT * FROM catfactentity ORDER BY id")
     fun getCatFactEntities(): Flow<List<CatFactEntity>>
 
-    @Query("SELECT * FROM catfactentity WHERE fact LIKE :query")
-    fun getCatFactEntitiesByQuery(query: String): Flow<List<CatFactEntity>>
+    @Query("SELECT * FROM catfactentity WHERE fact LIKE :searchQuery")
+    fun getCatFactEntitiesByQuery(searchQuery: String): Flow<List<CatFactEntity>>
 }

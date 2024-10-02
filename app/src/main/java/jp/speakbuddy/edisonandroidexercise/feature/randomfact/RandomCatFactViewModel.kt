@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class FactViewModel @Inject constructor(
+class RandomCatFactViewModel @Inject constructor(
     private val refreshRandomCatFact: RefreshRandomCatFact,
     observeRandomCatFact: ObserveRandomCatFact,
 ) : ViewModel() {

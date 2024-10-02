@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import jp.speakbuddy.edisonandroidexercise.data.network.retrofit.FactService
+import jp.speakbuddy.edisonandroidexercise.data.network.retrofit.CatFactService
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
@@ -15,30 +15,13 @@ import retrofit2.Retrofit
 @InstallIn(SingletonComponent::class)
 class ApiServiceModule {
 
-//    @Singleton
-//    @Provides
-//    fun provideOkHttpClient(): OkHttpClient {
-//        return OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
-//            level = HttpLoggingInterceptor.Level.BODY
-//        }).build()
-//    }
-
-//    @Singleton
-//    @Provides
-//    fun provideRetrofit(okHttpClient: OkHttpClient): FactService {
-//        return Retrofit.Builder().baseUrl(BASE_URL)
-//            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-//            .addConverterFactory(MoshiConverterFactory.create()).client(okHttpClient).build()
-//            .create(FactService::class.java)
-//    }
-
     @Singleton
     @Provides
-    fun provideFactService(): FactService {
+    fun provideCatFactService(): CatFactService {
         return Retrofit.Builder()
             .baseUrl("https://catfact.ninja/")
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .build()
-            .create(FactService::class.java)
+            .create(CatFactService::class.java)
     }
 }
