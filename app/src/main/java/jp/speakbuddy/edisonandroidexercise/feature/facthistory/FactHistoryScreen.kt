@@ -1,4 +1,7 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+@file:OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class
+)
 
 package jp.speakbuddy.edisonandroidexercise.feature.facthistory
 
@@ -57,7 +60,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jp.speakbuddy.edisonandroidexercise.R
 import jp.speakbuddy.edisonandroidexercise.core.designsystem.theme.EdisonAndroidExerciseTheme
 import jp.speakbuddy.edisonandroidexercise.domain.model.PresentableFact
-import jp.speakbuddy.edisonandroidexercise.feature.randomfact.FactContent
+import jp.speakbuddy.edisonandroidexercise.feature.FactContent
 
 @Composable
 fun FactHistoryScreen(

@@ -9,7 +9,11 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import de.mannodermaus.junit5.compose.createAndroidComposeExtension
 import jp.speakbuddy.edisonandroidexercise.R
-import jp.speakbuddy.edisonandroidexercise.domain.model.PresentableFact
+import jp.speakbuddy.edisonandroidexercise.core.testing.data.factGreaterThan100WithMultipleCats
+import jp.speakbuddy.edisonandroidexercise.core.testing.data.factGreaterThan100WithoutMultipleCats
+import jp.speakbuddy.edisonandroidexercise.core.testing.data.factSmallerThan100WithMultipleCats
+import jp.speakbuddy.edisonandroidexercise.core.testing.data.factSmallerThan100WithoutMultipleCats
+import jp.speakbuddy.edisonandroidexercise.feature.FactContent
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 
@@ -89,51 +93,82 @@ class RandomFactScreenTest {
     }
 
     @Test
-    fun factContent_verifyFactDisplayedIsSmallerThan100LengthAndHasNoMultipleCats() {
+    fun factContent_verifyFactDisplayedIsGreaterThan100LengthAndHasMultipleCats() {
         extension.use {
-            val fact = "This is a fact."
+            val presentableFact = factGreaterThan100WithMultipleCats
 
             setContent {
                 FactContent(
-                    presentableFact = PresentableFact(
-                        fact = fact,
-                        length = null,
-                        shouldShowMultipleCats = false
-                    )
+                    presentableFact = presentableFact
                 )
             }
 
-            onNodeWithText(fact).assertIsDisplayed()
-            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label)).assertIsNotDisplayed()
+            onNodeWithText(presentableFact.fact).assertIsDisplayed()
+            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label)).assertIsDisplayed()
+            onNodeWithText(
+                extension.activity.getString(
+                    R.string.fact_screen_length_label,
+                    presentableFact.length
+                )
+            ).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun factContent_verifyFactDisplayedIsGreaterThan100LengthAndHasNoMultipleCats() {
+        extension.use {
+            val presentableFact = factGreaterThan100WithoutMultipleCats
+
+            setContent {
+                FactContent(
+                    presentableFact = presentableFact
+                )
+            }
+
+            onNodeWithText(presentableFact.fact).assertIsDisplayed()
+            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label))
+                .assertIsNotDisplayed()
+            onNodeWithText(
+                extension.activity.getString(
+                    R.string.fact_screen_length_label,
+                    presentableFact.length
+                )
+            ).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun factContent_verifyFactDisplayedIsSmallerThan100LengthAndHasMultipleCats() {
+        extension.use {
+            val presentableFact = factSmallerThan100WithMultipleCats
+
+            setContent {
+                FactContent(
+                    presentableFact = presentableFact
+                )
+            }
+
+            onNodeWithText(presentableFact.fact).assertIsDisplayed()
+            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label)).assertIsDisplayed()
             onNodeWithText("Length").assertIsNotDisplayed()
         }
     }
 
     @Test
-    fun factContent_verifyFactDisplayedIsGreaterThan100LengthAndHasMultipleCats() {
+    fun factContent_verifyFactDisplayedIsSmallerThan100LengthAndHasNoMultipleCats() {
         extension.use {
-            val fact =
-                "The cat's front paw has 5 toes, but the back paws have 4. Some cats are born with as many as 7 front toes and extra back toes (polydactl)."
-            val length = "138"
+            val presentableFact = factSmallerThan100WithoutMultipleCats
 
             setContent {
                 FactContent(
-                    presentableFact = PresentableFact(
-                        fact = fact,
-                        length = length,
-                        shouldShowMultipleCats = true
-                    )
+                    presentableFact = presentableFact
                 )
             }
 
-            onNodeWithText(fact).assertIsDisplayed()
-            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label)).assertIsDisplayed()
-            onNodeWithText(
-                extension.activity.getString(
-                    R.string.fact_screen_length_label,
-                    length
-                )
-            ).assertIsDisplayed()
+            onNodeWithText(presentableFact.fact).assertIsDisplayed()
+            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label))
+                .assertIsNotDisplayed()
+            onNodeWithText("Length").assertIsNotDisplayed()
         }
     }
 }
