@@ -12,9 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -27,63 +31,80 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import jp.speakbuddy.edisonandroidexercise.R
 import jp.speakbuddy.edisonandroidexercise.core.designsystem.theme.EdisonAndroidExerciseTheme
+import jp.speakbuddy.edisonandroidexercise.domain.model.PresentableFact
+import jp.speakbuddy.edisonandroidexercise.ui.DevicePreviews
+
+@Composable
+fun FactScreen(
+    viewModel: FactViewModel = hiltViewModel(),
+    onFactHistoryClick: () -> Unit
+) {
+    val randomCatFactUiState: RandomCatFactUiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val error by viewModel.error.collectAsStateWithLifecycle()
+
+    FactScreen(randomCatFactUiState, error, onFactHistoryClick, viewModel::refresh)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FactScreen(
-    viewModel: FactViewModel = hiltViewModel()
+    randomCatFactUiState: RandomCatFactUiState,
+    error: Exception?,
+    onFactHistoryClick: () -> Unit,
+    onRefreshClick: () -> Unit
 ) {
-    Surface(
+    Scaffold(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
-                    ),
-                    title = {
-                        Text(text = stringResource(R.string.fact_screen_toolbar_title))
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(text = stringResource(R.string.fact_screen_toolbar_title))
+                },
+                actions = {
+                    IconButton(onClick = { onFactHistoryClick() }) {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = "Localized description"
+                        )
                     }
-                )
-            }
-        ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(innerPadding),
-                verticalArrangement = Arrangement.spacedBy(space = 16.dp)
-            ) {
-                val randomCatFactUiState: RandomCatFactUiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-                val error by viewModel.error.collectAsStateWithLifecycle()
-
-                RandomFactContent(
-                    randomCatFactUiState = randomCatFactUiState,
-                    error = error,
-                    onClick = { viewModel.refresh() }
-                )
-            }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(space = 16.dp)
+        ) {
+            RandomFactContent(
+                randomCatFactUiState = randomCatFactUiState,
+                error = error,
+                onClick = { onRefreshClick() }
+            )
         }
     }
 }
 
 @Composable
-private fun ColumnScope.RandomFactContent(
+fun ColumnScope.RandomFactContent(
     randomCatFactUiState: RandomCatFactUiState, error: Exception?, onClick: () -> Unit
 ) {
     Box {
@@ -98,10 +119,13 @@ private fun ColumnScope.RandomFactContent(
             )
         } else {
             when (randomCatFactUiState) {
-                is RandomCatFactUiState.Success -> FactContent(randomCatFactUiState = randomCatFactUiState)
+                is RandomCatFactUiState.Success -> FactContent(
+                    presentableFact = randomCatFactUiState.presentableFact
+                )
 
                 RandomCatFactUiState.Loading -> Box(
                     modifier = Modifier
+                        .semantics { contentDescription = "Loading" }
                         .fillMaxWidth()
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
@@ -138,9 +162,9 @@ private fun ColumnScope.RandomFactContent(
 }
 
 @Composable
-private fun FactContent(randomCatFactUiState: RandomCatFactUiState.Success) {
+fun FactContent(presentableFact: PresentableFact) {
     Column(modifier = Modifier.padding(16.dp)) {
-        if (randomCatFactUiState.shouldShowMultipleCats) {
+        if (presentableFact.shouldShowMultipleCats) {
             Text(
                 text = stringResource(R.string.fact_screen_multiple_cats_label),
                 style = MaterialTheme.typography.bodyLarge
@@ -151,11 +175,11 @@ private fun FactContent(randomCatFactUiState: RandomCatFactUiState.Success) {
         Text(
             text = buildAnnotatedString {
                 withStyle(style = SpanStyle()) {
-                    append(randomCatFactUiState.fact)
+                    append(presentableFact.fact)
                 }
 
-                if (randomCatFactUiState.shouldShowMultipleCats) {
-                    val startingIndex = randomCatFactUiState.fact.indexOf(
+                if (presentableFact.shouldShowMultipleCats) {
+                    val startingIndex = presentableFact.fact.indexOf(
                         "cats", ignoreCase = true
                     )
 
@@ -169,7 +193,7 @@ private fun FactContent(randomCatFactUiState: RandomCatFactUiState.Success) {
             }, style = MaterialTheme.typography.bodyLarge
         )
 
-        randomCatFactUiState.length?.let { length ->
+        presentableFact.length?.let { length ->
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(
@@ -181,49 +205,51 @@ private fun FactContent(randomCatFactUiState: RandomCatFactUiState.Success) {
     }
 }
 
-@Preview
+@DevicePreviews
 @Composable
 private fun FactContentNoMultipleCatsNoLength() {
     EdisonAndroidExerciseTheme {
         Surface {
             FactContent(
-                RandomCatFactUiState.Success(
-                    "The Maine Coon is 4 to 5 times larger than Singapura, smallest breed of breed of cat",
+                PresentableFact(
+                    fact = "The Maine Coon is 4 to 5 times larger than Singapura, smallest breed of breed of cat",
                     length = null,
-                    false
+                    shouldShowMultipleCats = false
                 )
             )
         }
     }
 }
 
-@Preview
+@DevicePreviews
 @Composable
 private fun FactContentMultipleCatsWithLength() {
     EdisonAndroidExerciseTheme {
         Surface {
             FactContent(
-                randomCatFactUiState = RandomCatFactUiState.Success(
-                    "The cat's front paw has 5 toes, but the back paws have 4. Some cats are born with as many as 7 front toes and extra back toes (polydactl).",
+                presentableFact = PresentableFact(
+                    fact = "The cat's front paw has 5 toes, but the back paws have 4. Some cats are born with as many as 7 front toes and extra back toes (polydactl).",
                     length = "138",
-                    true
+                    shouldShowMultipleCats = true
                 )
             )
         }
     }
 }
 
-@Preview
+@DevicePreviews
 @Composable
-private fun RandomFactContentNoCatsNoLength() {
+private fun RandomFactContentNoMultipleCatsNoLength() {
     EdisonAndroidExerciseTheme {
         Surface {
             Column {
                 RandomFactContent(
                     randomCatFactUiState = RandomCatFactUiState.Success(
-                        "The Maine Coon is 4 to 5 times larger than Singapura, smallest breed of breed of cat",
-                        length = null,
-                        false
+                        PresentableFact(
+                            fact = "The Maine Coon is 4 to 5 times larger than Singapura, smallest breed of breed of cat",
+                            length = null,
+                            shouldShowMultipleCats = false
+                        )
                     ),
                     error = null,
                     onClick = {}
@@ -233,7 +259,7 @@ private fun RandomFactContentNoCatsNoLength() {
     }
 }
 
-@Preview
+@DevicePreviews
 @Composable
 private fun RandomFactContentMultipleCatsWithLength() {
     EdisonAndroidExerciseTheme {
@@ -241,9 +267,11 @@ private fun RandomFactContentMultipleCatsWithLength() {
             Column {
                 RandomFactContent(
                     randomCatFactUiState = RandomCatFactUiState.Success(
-                        "The cat's front paw has 5 toes, but the back paws have 4. Some cats are born with as many as 7 front toes and extra back toes (polydactl).",
-                        length = "138",
-                        true
+                        PresentableFact(
+                            fact = "The cat's front paw has 5 toes, but the back paws have 4. Some cats are born with as many as 7 front toes and extra back toes (polydactl).",
+                            length = "138",
+                            shouldShowMultipleCats = true
+                        )
                     ),
                     error = null,
                     onClick = {}
@@ -253,7 +281,7 @@ private fun RandomFactContentMultipleCatsWithLength() {
     }
 }
 
-@Preview
+@DevicePreviews
 @Composable
 private fun RandomFactContentMultipleCatsWithNoLength() {
     EdisonAndroidExerciseTheme {
@@ -261,9 +289,11 @@ private fun RandomFactContentMultipleCatsWithNoLength() {
             Column {
                 RandomFactContent(
                     randomCatFactUiState = RandomCatFactUiState.Success(
-                        "Cats have about 130,000 hairs per square inch (20,155 hairs per square centimeter).",
-                        length = null,
-                        true
+                        PresentableFact(
+                            fact = "Cats have about 130,000 hairs per square inch (20,155 hairs per square centimeter).",
+                            length = null,
+                            shouldShowMultipleCats = true
+                        )
                     ),
                     error = null,
                     onClick = {}
@@ -273,7 +303,7 @@ private fun RandomFactContentMultipleCatsWithNoLength() {
     }
 }
 
-@Preview
+@DevicePreviews
 @Composable
 private fun RandomFactContentLoading() {
     EdisonAndroidExerciseTheme {
@@ -289,7 +319,7 @@ private fun RandomFactContentLoading() {
     }
 }
 
-@Preview
+@DevicePreviews
 @Composable
 private fun RandomFactContentError() {
     EdisonAndroidExerciseTheme {
@@ -302,13 +332,5 @@ private fun RandomFactContentError() {
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun FactScreenPreview() {
-    EdisonAndroidExerciseTheme {
-        FactScreen()
     }
 }

@@ -9,13 +9,11 @@ import kotlinx.coroutines.flow.update
 
 class TestCatFactDao : CatFactDao {
 
-    private val entitiesStateFlow = MutableStateFlow(emptyList<CatFactEntity?>())
+    private val entitiesStateFlow = MutableStateFlow(emptyList<CatFactEntity>())
 
     override suspend fun insertCatFact(catFactEntity: CatFactEntity) {
         entitiesStateFlow.update { oldValues ->
-            (oldValues + catFactEntity).distinctBy {
-                it?.id
-            }
+            oldValues + catFactEntity
         }
     }
 
@@ -23,5 +21,11 @@ class TestCatFactDao : CatFactDao {
         return entitiesStateFlow.map {
             it.first()
         }
+    }
+
+    override fun getCatFactEntities(): Flow<List<CatFactEntity>> = entitiesStateFlow
+
+    override fun getCatFactEntitiesByQuery(searchQuery: String) = entitiesStateFlow.map {
+        it.filter { fact -> fact.fact.contains(searchQuery) }
     }
 }

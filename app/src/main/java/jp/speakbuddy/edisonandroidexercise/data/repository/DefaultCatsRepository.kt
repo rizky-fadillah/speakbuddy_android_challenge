@@ -21,6 +21,20 @@ class DefaultCatsRepository @Inject constructor(
             entity?.asExternalModel()
         }
 
+    override fun getCatFacts(): Flow<List<Fact>> =
+        catFactDao.getCatFactEntities().map { entities ->
+            entities.map {
+                it.asExternalModel()
+            }
+        }
+
+    override fun searchCatFacts(searchQuery: String): Flow<List<Fact>> =
+        catFactDao.getCatFactEntitiesByQuery("%$searchQuery%").map { entities ->
+            entities.map {
+                it.asExternalModel()
+            }
+        }
+
     override suspend fun loadRandomCatFact() = withContext(Dispatchers.IO) {
         val networkResponse = network.getCatFact()
 

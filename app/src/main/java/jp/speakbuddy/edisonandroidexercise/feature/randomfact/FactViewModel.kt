@@ -6,9 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import jp.speakbuddy.edisonandroidexercise.core.common.Result
 import jp.speakbuddy.edisonandroidexercise.core.common.asResult
-import jp.speakbuddy.edisonandroidexercise.data.network.retrofit.FactServiceProvider
 import jp.speakbuddy.edisonandroidexercise.domain.ObserveRandomCatFact
 import jp.speakbuddy.edisonandroidexercise.domain.RefreshRandomCatFact
+import jp.speakbuddy.edisonandroidexercise.domain.model.PresentableFact
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,12 +17,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @HiltViewModel
 class FactViewModel @Inject constructor(
     private val refreshRandomCatFact: RefreshRandomCatFact,
-    observeRandomCatFact: ObserveRandomCatFact
+    observeRandomCatFact: ObserveRandomCatFact,
 ) : ViewModel() {
 
     private val _triggerRefresh = MutableStateFlow(false)
@@ -30,12 +29,13 @@ class FactViewModel @Inject constructor(
     private val _error: MutableStateFlow<Exception?> = MutableStateFlow(null)
     val error: StateFlow<Exception?> = _error
 
-    val uiState: StateFlow<RandomCatFactUiState> = uiState(observeRandomCatFact, _triggerRefresh)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = RandomCatFactUiState.Loading,
-        )
+    val uiState: StateFlow<RandomCatFactUiState> =
+        randomCatFactUiState(observeRandomCatFact, _triggerRefresh)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = RandomCatFactUiState.Loading,
+            )
 
     fun refresh() = viewModelScope.launch {
         _triggerRefresh.value = true
@@ -50,17 +50,9 @@ class FactViewModel @Inject constructor(
             _triggerRefresh.value = false
         }
     }
-
-    fun updateFact(completion: () -> Unit): String = runBlocking {
-        try {
-            FactServiceProvider.provide().getFact().fact
-        } catch (e: Throwable) {
-            "something went wrong. error = ${e.message}"
-        }.also { completion() }
-    }
 }
 
-private fun uiState(
+private fun randomCatFactUiState(
     observeRandomCatFact: ObserveRandomCatFact,
     triggerRefresh: StateFlow<Boolean>
 ): Flow<RandomCatFactUiState> {
@@ -75,11 +67,7 @@ private fun uiState(
                         RandomCatFactUiState.Loading
                     } else {
                         factToTriggerRefresh.data.first?.let { catFact ->
-                            RandomCatFactUiState.Success(
-                                fact = catFact.fact,
-                                length = if (catFact.length > 100) catFact.length.toString() else null,
-                                shouldShowMultipleCats = catFact.fact.lowercase().contains("cats")
-                            )
+                            RandomCatFactUiState.Success(catFact)
                         } ?: RandomCatFactUiState.Error("No data")
                     }
                 }
@@ -91,7 +79,7 @@ private fun uiState(
 }
 
 sealed interface RandomCatFactUiState {
-    data class Success(val fact: String, val length: String?, val shouldShowMultipleCats: Boolean) :
+    data class Success(val presentableFact: PresentableFact) :
         RandomCatFactUiState
 
     data class Error(val message: String?) : RandomCatFactUiState

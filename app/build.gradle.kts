@@ -32,8 +32,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -87,7 +86,9 @@ dependencies {
     implementation(libs.androidx.datastore.v111)
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.protobuf.kotlin.lite.v3252)
+    implementation(libs.coil.kt.compose)
 
     kapt(libs.hilt.compiler)
     kapt(libs.room.compiler) //TODO: Update to KSP
@@ -105,6 +106,7 @@ dependencies {
     testImplementation(libs.kotlin.test)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation("io.mockk:mockk:1.13.12")
 
     testRuntimeOnly(libs.junit.jupiter.engine)
 
@@ -114,6 +116,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.junit.jupiter.api)
+    androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation("de.mannodermaus.junit5:android-test-compose:1.4.0")
 
     api(libs.junit)
     api(libs.junit.jupiter.api)

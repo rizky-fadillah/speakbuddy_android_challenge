@@ -7,5 +7,9 @@ interface CatsRepository {
 
     fun getLatestCatFact(): Flow<Fact?>
 
+    fun getCatFacts(): Flow<List<Fact>>
+
+    fun searchCatFacts(searchQuery: String): Flow<List<Fact>>
+
     suspend fun loadRandomCatFact()
 }

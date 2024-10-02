@@ -19,5 +19,5 @@ data class CatFactEntity(
 
 fun CatFactEntity.asExternalModel() = Fact(
     fact = fact,
-    length = length
+    length = length,
 )

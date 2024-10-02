@@ -8,8 +8,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import jp.speakbuddy.edisonandroidexercise.feature.randomfact.FactScreen
 import jp.speakbuddy.edisonandroidexercise.core.designsystem.theme.EdisonAndroidExerciseTheme
+import jp.speakbuddy.edisonandroidexercise.navigation.CatNavHost
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    FactScreen()
+                    CatNavHost()
                 }
             }
         }
