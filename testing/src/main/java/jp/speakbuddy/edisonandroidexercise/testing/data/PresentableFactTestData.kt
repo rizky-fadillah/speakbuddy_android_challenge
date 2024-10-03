@@ -7,7 +7,7 @@ val factGreaterThan100WithMultipleCats = PresentableFact(
         Cats' eyes shine in the dark because of the tapetum, a reflective layer in the eye, which 
         acts like a mirror.
     """.trimIndent(),
-    length = "109",
+    length = "110",
     shouldShowMultipleCats = true
 )
 
@@ -17,7 +17,7 @@ val factGreaterThan100WithoutMultipleCats = PresentableFact(
         He hid for seven weeks behind a panel on the airplane. By the time he was discovered,
         he had traveled nearly 373,000 miles (600,000 km).
     """.trimIndent(),
-    length = "217",
+    length = "218",
     shouldShowMultipleCats = false
 )
 

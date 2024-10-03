@@ -3,7 +3,6 @@ package jp.speakbuddy.edisonandroidexercise.database
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import jp.speakbuddy.edisonandroidexercise.database.CatFactDatabase
 import jp.speakbuddy.edisonandroidexercise.database.dao.CatFactDao
 import jp.speakbuddy.edisonandroidexercise.database.model.CatFactEntity
 import kotlinx.coroutines.flow.first
@@ -33,8 +32,9 @@ class CatFactDaoTest {
     fun closeDb() = db.close()
 
     @Test
-    fun catFactDao_get_latest_cat_fact_entity() = runTest {
-        val entity = CatFactEntity(
+    fun testGetLatestCatFact_ReturnsMostRecentEntity() = runTest {
+        // Arrange: Prepare the cat fact entities to insert into the database
+        val entity1 = CatFactEntity(
             id = 0,
             fact = "This is cat fact no. 1",
             length = 22
@@ -45,12 +45,12 @@ class CatFactDaoTest {
             length = 22
         )
 
-        catFactDao.insertCatFact(entity)
+        // Act: Insert the entities and retrieve the latest cat fact
+        catFactDao.insertCatFact(entity1)
         catFactDao.insertCatFact(entity2)
+        val latestFact = catFactDao.getLatestCatFactEntity().first()
 
-        assertEquals(
-            entity2,
-            catFactDao.getLatestCatFactEntity().first()
-        )
+        // Assert: Verify that the most recent entity is returned
+        assertEquals(entity2, latestFact)
     }
 }

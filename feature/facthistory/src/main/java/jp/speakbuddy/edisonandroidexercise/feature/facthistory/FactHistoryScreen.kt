@@ -158,11 +158,11 @@ private fun SearchToolbar(
                                 false
                             }
                         }
-                        .testTag("searchTextField"),
+                        .testTag(stringResource(R.string.fact_history_screen_search_text_field_test_tag)),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Rounded.Search,
-                            contentDescription = "Search",
+                            contentDescription = stringResource(R.string.fact_history_screen_search_icon_content_desc),
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     },

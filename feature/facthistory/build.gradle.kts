@@ -63,7 +63,6 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     testImplementation(project(":testing"))
-    testImplementation(libs.junit)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.mockk)
 
@@ -71,7 +70,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core.v361)
     androidTestImplementation(libs.androidx.compose.ui.test)
-    androidTestImplementation(libs.junit.jupiter.api)
     androidTestImplementation(libs.android.test.compose)
-
+    androidTestImplementation(libs.junit.jupiter.api)
 }

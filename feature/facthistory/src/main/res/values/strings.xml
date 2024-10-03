@@ -1,4 +1,6 @@
 <resources>
+    <string name="fact_history_screen_search_icon_content_desc">Search</string>
+    <string name="fact_history_screen_search_text_field_test_tag">searchTextField</string>
     <string name="fact_history_screen_empty_search_result_message">No cat facts here just yet. But here\'s a cute cat picture to brighten your day!</string>
     <string name="fact_history_screen_empty_search_result_image_content_desc">Empty state image</string>
     <string name="fact_history_screen_clear_search_text_content_desc">Clear search text</string>

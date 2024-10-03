@@ -7,8 +7,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import de.mannodermaus.junit5.compose.ComposeContext
 import de.mannodermaus.junit5.compose.createAndroidComposeExtension
 import jp.speakbuddy.edisonandroidexercise.core.ui.FactContent
+import jp.speakbuddy.edisonandroidexercise.model.PresentableFact
 import jp.speakbuddy.edisonandroidexercise.testing.data.factGreaterThan100WithMultipleCats
 import jp.speakbuddy.edisonandroidexercise.testing.data.factGreaterThan100WithoutMultipleCats
 import jp.speakbuddy.edisonandroidexercise.testing.data.factSmallerThan100WithMultipleCats
@@ -24,7 +26,7 @@ class RandomFactScreenTest {
     val extension = createAndroidComposeExtension<ComponentActivity>()
 
     @Test
-    fun factScreen_verifyToolbarTitleAndActionButtonAreDisplayed() {
+    fun testFactScreen_ToolbarTitleAndActionButtonAreDisplayed() {
         extension.use {
             setContent {
                 RandomCatFactScreen(
@@ -46,7 +48,7 @@ class RandomFactScreenTest {
     }
 
     @Test
-    fun randomFactContent_whenLoadingState_verifyLoadingIndicatorIsDisplayed() {
+    fun testRandomFactContent_LoadingState_ShowsLoadingIndicator() {
         extension.use {
             setContent {
                 RandomFactContent(
@@ -60,7 +62,7 @@ class RandomFactScreenTest {
     }
 
     @Test
-    fun randomFactContent_whenErrorExists_verifyErrorMessageIsDisplayed() {
+    fun testRandomFactContent_LoadingStateWithError_ShowsErrorMessage() {
         extension.use {
             val errorMessage = "This is error message"
 
@@ -71,12 +73,13 @@ class RandomFactScreenTest {
                 )
             }
 
+            // Verify that the error message is displayed, even in the Loading state
             onNodeWithText(errorMessage).assertIsDisplayed()
         }
     }
 
     @Test
-    fun randomFactContent_whenErrorState_verifyErrorMessageIsDisplayed() {
+    fun testRandomFactContent_ErrorStateWithoutException_ShowsErrorMessage() {
         extension.use {
             val errorMessage = "This is error message"
 
@@ -87,12 +90,13 @@ class RandomFactScreenTest {
                 )
             }
 
+            // Verify that the error message is displayed when the UI state is Error but no exception
             onNodeWithText(errorMessage).assertIsDisplayed()
         }
     }
 
     @Test
-    fun factContent_verifyFactDisplayedIsGreaterThan100LengthAndHasMultipleCats() {
+    fun testFactContent_GreaterThan100LengthWithMultipleCats_ShowsCorrectContent() {
         extension.use {
             val presentableFact = factGreaterThan100WithMultipleCats
 
@@ -102,19 +106,16 @@ class RandomFactScreenTest {
                 )
             }
 
-            onNodeWithText(presentableFact.fact).assertIsDisplayed()
-            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label)).assertIsDisplayed()
-            onNodeWithText(
-                extension.activity.getString(
-                    R.string.fact_screen_length_label,
-                    presentableFact.length
-                )
-            ).assertIsDisplayed()
+            verifyFactContent(
+                presentableFact = presentableFact,
+                shouldShowMultipleCats = true,
+                shouldShowLength = true
+            )
         }
     }
 
     @Test
-    fun factContent_verifyFactDisplayedIsGreaterThan100LengthAndHasNoMultipleCats() {
+    fun testFactContent_GreaterThan100LengthWithoutMultipleCats_ShowsCorrectContent() {
         extension.use {
             val presentableFact = factGreaterThan100WithoutMultipleCats
 
@@ -124,20 +125,16 @@ class RandomFactScreenTest {
                 )
             }
 
-            onNodeWithText(presentableFact.fact).assertIsDisplayed()
-            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label))
-                .assertIsNotDisplayed()
-            onNodeWithText(
-                extension.activity.getString(
-                    R.string.fact_screen_length_label,
-                    presentableFact.length
-                )
-            ).assertIsDisplayed()
+            verifyFactContent(
+                presentableFact = presentableFact,
+                shouldShowMultipleCats = false,
+                shouldShowLength = true
+            )
         }
     }
 
     @Test
-    fun factContent_verifyFactDisplayedIsSmallerThan100LengthAndHasMultipleCats() {
+    fun testFactContent_SmallerThan100LengthWithMultipleCats_ShowsCorrectContent() {
         extension.use {
             val presentableFact = factSmallerThan100WithMultipleCats
 
@@ -147,14 +144,16 @@ class RandomFactScreenTest {
                 )
             }
 
-            onNodeWithText(presentableFact.fact).assertIsDisplayed()
-            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label)).assertIsDisplayed()
-            onNodeWithText("Length").assertIsNotDisplayed()
+            verifyFactContent(
+                presentableFact = presentableFact,
+                shouldShowMultipleCats = true,
+                shouldShowLength = false
+            )
         }
     }
 
     @Test
-    fun factContent_verifyFactDisplayedIsSmallerThan100LengthAndHasNoMultipleCats() {
+    fun testFactContent_SmallerThan100LengthWithoutMultipleCats_ShowsCorrectContent() {
         extension.use {
             val presentableFact = factSmallerThan100WithoutMultipleCats
 
@@ -164,9 +163,37 @@ class RandomFactScreenTest {
                 )
             }
 
-            onNodeWithText(presentableFact.fact).assertIsDisplayed()
+            verifyFactContent(
+                presentableFact = presentableFact,
+                shouldShowMultipleCats = false,
+                shouldShowLength = false
+            )
+        }
+    }
+
+    private fun ComposeContext.verifyFactContent(
+        presentableFact: PresentableFact,
+        shouldShowMultipleCats: Boolean,
+        shouldShowLength: Boolean
+    ) {
+        onNodeWithText(presentableFact.fact).assertIsDisplayed()
+
+        if (shouldShowMultipleCats) {
+            onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label))
+                .assertIsDisplayed()
+        } else {
             onNodeWithText(extension.activity.getString(R.string.fact_screen_multiple_cats_label))
                 .assertIsNotDisplayed()
+        }
+
+        if (shouldShowLength) {
+            onNodeWithText(
+                extension.activity.getString(
+                    R.string.fact_screen_length_label,
+                    presentableFact.length
+                )
+            ).assertIsDisplayed()
+        } else {
             onNodeWithText("Length").assertIsNotDisplayed()
         }
     }

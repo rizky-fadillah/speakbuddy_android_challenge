@@ -46,24 +46,27 @@ class RandomCatFactViewModelTest : CoroutineTest {
     }
 
     @Test
-    fun uiStateRandomCatFact_whenInitialized_thenShowLoading() = runTest {
+    fun `When Initialized Then ShowLoading`() = runTest {
         assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
-    fun uiStateRandomCatFact_whenCollectStarts_thenShowLoading() = runTest {
+    fun `When CollectStarts Then ShowLoading`() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
         assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
     }
 
     @Test
-    fun uiStateRandomCatFact_whenRandomCatFactObserved_matchesLatestCatFactFromRepository() =
+    fun testObserveRandomCatFact_Success_MatchesLatestCatFactFromRepository() =
         runTest {
+            // Collect the uiState in a background scope
             backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
+            // Send a random cat fact to the repository
             catsRepository.sendRandomCatFact(Fact("This is a cat fact.", length = 19))
 
+            // Verify that the UI state is Success and matches the latest cat fact from the repository
             val successItem = viewModel.uiState.value
             assertIs<RandomCatFactUiState.Success>(successItem)
 
@@ -75,22 +78,39 @@ class RandomCatFactViewModelTest : CoroutineTest {
         }
 
     @Test
-    fun uiStateRandomCatFact_whenCollectStartsAndRandomCatFactObserved_thenShowLoadingAndSuccess() =
+    fun testObserveRandomCatFact_Success_ShowsCorrectPresentableFact() =
         runTest {
             backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-            assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
+            catsRepository.sendRandomCatFact(
+                fact = Fact(
+                    fact = "This is a cat fact.",
+                    length = 19
+                )
+            )
 
-            catsRepository.sendRandomCatFact(Fact("This is a cat fact.", length = 19))
-
+            /**
+             * Verify that the `Fact` is correctly mapped to `PresentableFact`.
+             *
+             * - `PresentableFact.length` should be `null` because `Fact.length` is
+             *   less than 100.
+             * - `PresentableFact.shouldShowMultipleCats` should be `false` since
+             *   the `Fact.fact` string does not contain the word "cats".
+             */
             assertEquals(
-                RandomCatFactUiState.Success(PresentableFact("This is a cat fact.", null, false)),
+                RandomCatFactUiState.Success(
+                    PresentableFact(
+                        fact = "This is a cat fact.",
+                        length = null,
+                        shouldShowMultipleCats = false
+                    )
+                ),
                 viewModel.uiState.value
             )
         }
 
     @Test
-    fun uiStateRandomCatFact_whenRefreshStartsAndFails_thenShowLoadingAndError() =
+    fun testRefreshRandomCatFact_ThrowsError_ShowsLoadingAndError() =
         runTest {
             /**
              *  `RefreshRandomCatFact` is mocked here intentionally to demonstrate the usage of
@@ -105,28 +125,26 @@ class RandomCatFactViewModelTest : CoroutineTest {
             val thrownException = Exception("Error message")
             coEvery { mockRefreshRandomCatFact.invoke() } throws thrownException
 
+            // Creating ViewModel with the mocked `RefreshRandomCatFact`
             val viewModel = RandomCatFactViewModel(mockRefreshRandomCatFact, observeRandomCatFact)
 
             backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
             assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
 
-            assertEquals(
-                thrownException,
-                viewModel.error.value
-            )
+            // Verifying the exception is captured in the `viewModel.error` StateFlow
+            assertEquals(thrownException, viewModel.error.value)
         }
 
     @Test
-    fun uiStateRandomCatFact_whenObserveRandomCatFactFail_thenShowError() =
+    fun testObserveRandomCatFact_ThrowsError_ShowsErrorState() =
         runTest {
             backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.uiState.collect() }
 
-            assertEquals(RandomCatFactUiState.Loading, viewModel.uiState.value)
-
-            // Emit empty list to the backing flow to emulate the empty data scenario in local db.
+            // Simulating an empty data scenario in the local db by emitting an empty list to the backing flow
             catsRepository.setFlowEmpty()
 
+            // Verify that the `viewModel.uiState` transitions to an Error state with the expected message
             assertEquals(
                 RandomCatFactUiState.Error("No data"),
                 viewModel.uiState.value

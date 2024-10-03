@@ -71,7 +71,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core.v361)
     androidTestImplementation(libs.androidx.compose.ui.test)
-    androidTestImplementation(libs.junit.jupiter.api)
     androidTestImplementation(libs.android.test.compose)
-
+    androidTestImplementation(libs.junit.jupiter.api)
 }

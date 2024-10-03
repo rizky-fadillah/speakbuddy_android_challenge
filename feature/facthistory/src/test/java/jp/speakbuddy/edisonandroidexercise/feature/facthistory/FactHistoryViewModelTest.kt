@@ -36,23 +36,28 @@ class FactHistoryViewModelTest : CoroutineTest {
     }
 
     @Test
-    fun uiState_whenInitialized_thenShowLoading() = runTest {
+    fun testInitialization_ShowsLoadingState() = runTest {
+        // Verify that the initial state is Loading
         assertEquals(FactHistoryUiState.Loading, viewModel.factHistoryUiState.value)
     }
 
     @Test
-    fun uiState_whenCollectStarts_thenShowLoading() = runTest {
+    fun testCollectingUiState_ShowsLoading() = runTest {
+        // Collect the uiState in a background scope
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.factHistoryUiState.collect() }
 
+        // Verify that the initial state is Loading during collection
         assertEquals(FactHistoryUiState.Loading, viewModel.factHistoryUiState.value)
     }
 
     @Test
-    fun uiState_whenSuccess_matchesCatFactsFromRepository() = runTest {
+    fun testSearchCatFacts_Success_ShowsSearchResultsMatchingRepository() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.factHistoryUiState.collect() }
 
-        catsRepository.sendRandomCatFact(Fact("This is a cat fact.", length = 19))
+        // Send a random cat fact to the repository
+        catsRepository.sendRandomCatFact(Fact(fact = "This is a cat fact.", length = 19))
 
+        // Verify the UI state is Success and matches the repository data
         val successItem = viewModel.factHistoryUiState.value
         assertIs<FactHistoryUiState.Success>(successItem)
 
@@ -61,21 +66,39 @@ class FactHistoryViewModelTest : CoroutineTest {
     }
 
     @Test
-    fun uiState_searchQuery_matchesCatFactsFromRepository() = runTest {
+    fun testSearchQueryChanged_ResultsInLoadingStateAndMatchingSearchResults() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.factHistoryUiState.collect() }
 
-        assertEquals(FactHistoryUiState.Loading, viewModel.factHistoryUiState.value)
-
+        // Trigger search query change
         viewModel.onSearchQueryChanged("Query")
 
+        // Verify the UI enters Loading state
         assertEquals(FactHistoryUiState.Loading, viewModel.factHistoryUiState.value)
 
+        // Send a random cat fact to the repository
         catsRepository.sendRandomCatFact(Fact("This is a cat fact.", length = 19))
 
+        // Verify the UI state is Success and matches the repository data
         val successItem = viewModel.factHistoryUiState.value
         assertIs<FactHistoryUiState.Success>(successItem)
 
         val catFactsFromRepository = catsRepository.getCatFacts().first()
         assertEquals(catFactsFromRepository.map { it.toPresentableFact() }, successItem.facts)
     }
+
+    @Test
+    fun testSearchCatFacts_Success_EmptyData_ShowsEmptyResults() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.factHistoryUiState.collect() }
+
+        // Simulating an empty data scenario in the local db by emitting an empty list to the backing flow
+        catsRepository.setFlowEmpty()
+
+        // Verify the UI state is Success
+        val successItem = viewModel.factHistoryUiState.value
+        assertIs<FactHistoryUiState.Success>(successItem)
+
+        // Verify that the result list is empty
+        assertEquals(emptyList(), successItem.facts)
+    }
+
 }

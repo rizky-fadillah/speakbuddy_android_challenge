@@ -120,9 +120,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core.v361)
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.junit.jupiter.api)
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.android.test.compose)
+    androidTestImplementation(libs.junit.jupiter.api)
 
     api(libs.junit)
     api(libs.junit.jupiter.api)
