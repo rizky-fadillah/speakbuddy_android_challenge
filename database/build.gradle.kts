@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 
-    id("de.mannodermaus.android-junit5")
+    alias(libs.plugins.android.junit5)
 
     kotlin("kapt")
 }

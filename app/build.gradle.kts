@@ -1,11 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     alias(libs.plugins.compose)
 
-    id("org.jetbrains.kotlin.android")
-    id("de.mannodermaus.android-junit5")
+    alias(libs.plugins.android.junit5)
     id("com.google.protobuf")
 
     kotlin("kapt")
@@ -76,7 +76,13 @@ protobuf {
 }
 
 dependencies {
+    implementation(project(":feature:randomcat"))
+    implementation(project(":feature:facthistory"))
+    implementation(project(":model"))
     implementation(project(":data"))
+    implementation(project(":ui"))
+    implementation(project(":common"))
+    implementation(project(":designsystem"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -86,9 +92,9 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.v111)
-    implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.android)
     implementation(libs.protobuf.kotlin.lite.v3252)
     implementation(libs.coil.kt.compose)
 
@@ -97,10 +103,8 @@ dependencies {
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
-
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit.kotlin.serialization)
-
     implementation(libs.okhttp)
     implementation(libs.retrofit.core)
 
@@ -108,10 +112,11 @@ dependencies {
     testImplementation(libs.kotlin.test)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation("io.mockk:mockk:1.13.12")
+    testImplementation(libs.mockk)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
 
+    androidTestImplementation(project(":testing"))
     androidTestImplementation(kotlin("test"))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core.v361)
@@ -119,7 +124,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.junit.jupiter.api)
     androidTestImplementation(libs.androidx.compose.ui.test)
-    androidTestImplementation("de.mannodermaus.junit5:android-test-compose:1.4.0")
+    androidTestImplementation(libs.android.test.compose)
 
     api(libs.junit)
     api(libs.junit.jupiter.api)

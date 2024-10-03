@@ -5,8 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import jp.speakbuddy.edisonandroidexercise.feature.facthistory.factHistoryScreen
 import jp.speakbuddy.edisonandroidexercise.feature.facthistory.navigateToFactHistory
-import jp.speakbuddy.edisonandroidexercise.feature.randomfact.FactRoute
-import jp.speakbuddy.edisonandroidexercise.feature.randomfact.factScreen
+import jp.speakbuddy.edisonandroidexercise.feature.randomcat.navigation.FactRoute
+import jp.speakbuddy.edisonandroidexercise.feature.randomcat.navigation.factScreen
 
 @Composable
 fun CatNavHost() {

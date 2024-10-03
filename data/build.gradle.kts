@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 
-    id("de.mannodermaus.android-junit5")
+    alias(libs.plugins.android.junit5)
 
     kotlin("kapt")
 }
@@ -39,6 +39,7 @@ android {
 dependencies {
     api(project(":database"))
     api(project(":network"))
+    api(project(":common"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -47,6 +48,7 @@ dependencies {
 
     kapt(libs.hilt.compiler)
 
+    testImplementation(project(":testing"))
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter.api)
