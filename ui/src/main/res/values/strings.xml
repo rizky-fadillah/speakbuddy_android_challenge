@@ -1,0 +1,4 @@
+<resources>
+    <string name="fact_screen_multiple_cats_label">Multiple cats!</string>
+    <string name="fact_screen_length_label">Length: %s</string>
+</resources>
